@@ -51,7 +51,7 @@ function App() {
   useEffect(() => {
     if (currPlayer == "O") {
       async function getAImove() {
-        const response = await fetch("http://192.168.1.38:5000/ai/nextmove", {
+        const response = await fetch("https://tic-tac-toe-backend-i07w.onrender.com/ai/nextmove", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
