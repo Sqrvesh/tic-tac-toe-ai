@@ -5,6 +5,10 @@ function App() {
   const [board, setBoard] = useState([" ", " ", " ", " ", " ", " ", " ", " ", " "]);
   const [currPlayer, setCurrPlayer] = useState("X");
   const [result, setResult] = useState(null);
+  const [player, setPlayer] = useState("X");
+  const [ai, setAi] = useState("O");
+  const [moveFirst, setMoveFirst] = useState(true);
+  const [isloading, setIsLoading] = useState(false);
   
   useEffect(() => {
     function checkWin() {
@@ -41,7 +45,7 @@ function App() {
 
     const res = checkWin();
     if (res === "draw") {
-      setResult("Match DRAW!!")
+      setResult("Match DRAW!!");
     } else if (res != 0) {
       setResult("Match won by " + res);
     }
@@ -49,8 +53,9 @@ function App() {
   }, [board]);
 
   useEffect(() => {
-    if (currPlayer == "O") {
+    if (currPlayer == ai) {
       async function getAImove() {
+        setIsLoading(true);
         const response = await fetch("https://tic-tac-toe-backend-i07w.onrender.com/ai/nextmove", {
           method: "POST",
           headers: {
@@ -58,11 +63,12 @@ function App() {
           },
           body: JSON.stringify({
             board: board,
-            player: "O"
+            player: ai
           })
         });
 
         const data = await response.json();
+        setIsLoading(false);
         makeMove(Number(data.move));
       }
 
@@ -84,10 +90,38 @@ function App() {
     const nextPlayer = currPlayer === "X" ? "O" : "X";
     setCurrPlayer(nextPlayer);
   }
+
+  function togglePlayerSym() {
+    if (player == "X") {
+      setPlayer("O");
+      setCurrPlayer("O");
+      setAi("X");
+    } else {
+      setPlayer("X");
+      setAi("O");
+    }
+  }
+
+  function toggleMoveFirst() {
+    if (moveFirst) {
+      setMoveFirst(false);
+      setCurrPlayer(ai);
+    } else {
+      setMoveFirst(true);
+      setCurrPlayer(player);
+    }
+  }
   
   return (
     <div className='app'>
+      {isloading &&
+        <div className='loading-container'>
+          <div className='loading'>Loading...</div>
+        </div>
+      }
       <div className='result'>{result}</div>
+      <button onClick={togglePlayerSym}>Play as: {player}</button>
+      <button onClick={toggleMoveFirst}>{moveFirst ? "You move first" : "You move second"}</button>
       <div className='board-grid'>
         <div className='cell b-right b-down' onClick={() => {makeMove(0)}}>{board[0]}</div>
         <div className='cell b-left b-right b-down' onClick={() => {makeMove(1)}}>{board[1]}</div>
