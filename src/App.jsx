@@ -9,6 +9,7 @@ function App() {
   const [ai, setAi] = useState("O");
   const [moveFirst, setMoveFirst] = useState(true);
   const [isloading, setIsLoading] = useState(false);
+  const [isWinningComb, setIsWinningComb] = useState([false, false, false, false, false, false, false, false, false])
   
   useEffect(() => {
     function checkWin() {
@@ -25,7 +26,12 @@ function App() {
 
       for (let i = 0; i < wincons.length; i++) {
         const [a, b, c] = wincons[i];
-        if (board[a] == board[b] && board[a] == board[c]) {
+        if (board[a] == board[b] && board[a] == board[c] && board[a] != " ") {
+          let winningCombCpy = [...isWinningComb];
+          winningCombCpy[a] = true;
+          winningCombCpy[b] = true;
+          winningCombCpy[c] = true;
+          setIsWinningComb(winningCombCpy);
           return board[a];
         }
       }
@@ -119,19 +125,23 @@ function App() {
           <div className='loading'>Loading...</div>
         </div>
       }
-      <div className='result'>{result}</div>
-      <button onClick={togglePlayerSym}>Play as: {player}</button>
-      <button onClick={toggleMoveFirst}>{moveFirst ? "You move first" : "You move second"}</button>
+
+      <div className='settings-container'>
+        <div className='result'>{result || "TIC TAC TOE"}</div>
+        <button onClick={togglePlayerSym} className='settings-button'>Play as: {player}</button>
+        <button onClick={toggleMoveFirst} className='settings-button'>{moveFirst ? "You move first" : "You move second"}</button>
+      </div>
+
       <div className='board-grid'>
-        <div className='cell b-right b-down' onClick={() => {makeMove(0)}}>{board[0]}</div>
-        <div className='cell b-left b-right b-down' onClick={() => {makeMove(1)}}>{board[1]}</div>
-        <div className='cell b-left b-down' onClick={() => {makeMove(2)}}>{board[2]}</div>
-        <div className='cell b-up b-right b-down' onClick={() => {makeMove(3)}}>{board[3]}</div>
-        <div className='cell b-left b-right b-up b-down' onClick={() => {makeMove(4)}}>{board[4]}</div>
-        <div className='cell b-up b-left b-down' onClick={() => {makeMove(5)}}>{board[5]}</div>
-        <div className='cell b-up b-right' onClick={() => {makeMove(6)}}>{board[6]}</div>
-        <div className='cell b-left b-up b-right' onClick={() => {makeMove(7)}}>{board[7]}</div>
-        <div className='cell b-left b-up'onClick={() => {makeMove(8)}}>{board[8]}</div>
+        <div className='cell b-right b-down eee' style={{backgroundColor: isWinningComb[0] ? 'rgb(98, 253, 98)' : 'white'}} onClick={() => {makeMove(0)}}>{board[0]}</div>
+        <div className='cell b-left b-right b-down' style={{backgroundColor: isWinningComb[1] ? 'rgb(98, 253, 98)' : 'white'}} onClick={() => {makeMove(1)}}>{board[1]}</div>
+        <div className='cell b-left b-down' style={{backgroundColor: isWinningComb[2] ? 'rgb(98, 253, 98)' : 'white'}} onClick={() => {makeMove(2)}}>{board[2]}</div>
+        <div className='cell b-up b-right b-down' style={{backgroundColor: isWinningComb[3] ? 'rgb(98, 253, 98)' : 'white'}} onClick={() => {makeMove(3)}}>{board[3]}</div>
+        <div className='cell b-left b-right b-up b-down' style={{backgroundColor: isWinningComb[4] ? 'rgb(98, 253, 98)' : 'white'}} onClick={() => {makeMove(4)}}>{board[4]}</div>
+        <div className='cell b-up b-left b-down' style={{backgroundColor: isWinningComb[5] ? 'rgb(98, 253, 98)' : 'white'}} onClick={() => {makeMove(5)}}>{board[5]}</div>
+        <div className='cell b-up b-right' style={{backgroundColor: isWinningComb[6] ? 'rgb(98, 253, 98)' : 'white'}} onClick={() => {makeMove(6)}}>{board[6]}</div>
+        <div className='cell b-left b-up b-right' style={{backgroundColor: isWinningComb[7] ? 'rgb(98, 253, 98)' : 'white'}} onClick={() => {makeMove(7)}}>{board[7]}</div>
+        <div className='cell b-left b-up' style={{backgroundColor: isWinningComb[8] ? 'rgb(98, 253, 98)' : 'white'}} onClick={() => {makeMove(8)}}>{board[8]}</div>
       </div>
     </div>
   )
